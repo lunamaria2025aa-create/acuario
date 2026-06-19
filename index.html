@@ -3,306 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atrapa los Deseos</title>
+    <title>Mi Acuario Virtual</title>
     <style>
-        :root {
-            --paper-blue: #98bfd3; /* Color de las colinas de papel */
-            --paper-cream: #f9f7f1; /* Interior de papel */
-            --font-serif: 'Georgia', serif;
-        }
-
-        body, html {
+        /* Estilos Globales con vibras de Dark Academia / Lofi */
+        body {
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Evita barras de desplazamiento */
-            font-family: var(--font-serif);
+            padding: 20px;
+            background-color: #1a1a2e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e2e2;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
 
-        /* --- FONDO LOFI CON TEXTURA DE PAPEL (Diorama 3D) --- */
-        #game-container {
-            width: 100vw;
-            height: 100vh;
-            background-image: url('image_9.png'); /* Fondo Lofi */
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            cursor: none; /* Oculta el cursor para mayor inmersión */
-            perspective: 2000px; /* Esencial para el efecto 3D de capas */
+        h1 {
+            margin-bottom: 10px;
+            color: #b8c1ec;
+            text-shadow: 0 0 10px rgba(184, 193, 236, 0.5);
         }
-        
-        /* Simulación de las colinas de papel cortado para profundidad */
-        .paper-hill {
-            position: absolute;
-            bottom: 0;
-            left: 0;
+
+        /* Controles de Color */
+        .controls {
+            margin-bottom: 20px;
+            background: #16161a;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .controls label {
+            font-size: 0.9rem;
+            color: #a7a9be;
+        }
+
+        .controls input[type="color"] {
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+        }
+
+        /* Contenedor de Tanques */
+        .aquarium-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             width: 100%;
-            height: 20%;
-            background-color: var(--paper-blue);
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            transform: translateZ(10px); /* Ligeramente adelante del fondo */
+            max-width: 1000px;
+        }
+
+        /* Estilo Base del Tanque */
+        .tank {
+            height: 400px;
+            border: 6px solid #232946;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0,0,0,0.5);
+            transition: background-color 0.5s ease;
+            /* Color inicial por defecto (Azul oceánico profundo) */
+            background-color: #0f4c81; 
+        }
+
+        .tank-title {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            margin: 0;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 5px 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
             z-index: 10;
         }
 
-        /* --- LOS PERSONAJES (Papercraft Style) --- */
-        #player {
-            width: 120px; /* Ajusta según tus imágenes */
-            height: 160px;
+        /* --- Animaciones y Criaturas --- */
+        .creature {
             position: absolute;
-            bottom: 30px; /* Empieza un poco arriba de la colina */
+            font-size: 3rem;
+            user-select: none;
+        }
+
+        /* Tanque 1: Medusas (Movimiento Vertical/Flotante) */
+        .jellyfish-1 {
+            top: 60%;
+            left: 20%;
+            animation: floatUp 6s ease-in-out infinite alternate;
+        }
+        .jellyfish-2 {
+            top: 30%;
+            left: 60%;
+            animation: floatUp 8s ease-in-out infinite alternate-reverse;
+            font-size: 2.5rem;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(20px) translateX(0px) rotate(0deg); opacity: 0.8; }
+            50% { transform: translateY(-40px) translateX(10px) rotate(5deg); }
+            100% { transform: translateY(-80px) translateX(-5px) rotate(-5deg); opacity: 0.9; }
+        }
+
+        /* Tanque 2: Tiburones (Movimiento Horizontal de lado a lado) */
+        .shark {
+            top: 40%;
+            left: -100px;
+            animation: swimHorizontal 10s linear infinite;
+        }
+
+        @keyframes swimHorizontal {
+            0% { left: -80px; transform: scaleX(1); } /* Caminando a la derecha */
+            45% { transform: scaleX(1); }
+            50% { left: 110%; transform: scaleX(-1); } /* Gira a la izquierda */
+            95% { transform: scaleX(-1); }
+            100% { left: -80px; transform: scaleX(1); }
+        }
+
+        /* Tanque 3: Tortugas (Movimiento Diagonal y calmado) */
+        .turtle-1 {
+            bottom: 20%;
+            right: -80px;
+            animation: swimDiagonal 14s linear infinite;
+        }
+
+        @keyframes swimDiagonal {
+            0% { right: -80px; bottom: 10%; transform: rotate(10deg) scaleX(1); }
+            50% { right: 110%; bottom: 60%; transform: rotate(-10deg) scaleX(1); }
+            51% { transform: scaleX(-1); } /* Gira */
+            100% { right: -80px; bottom: 10%; transform: rotate(10deg) scaleX(-1); }
+        }
+
+        /* Burbujas de fondo para dar ambiente */
+        .bubbles {
+            position: absolute;
+            bottom: 0;
             left: 50%;
-            transform: translateX(-50%) translateZ(20px); /* Más adelante */
-            z-index: 20;
-            cursor: pointer;
-            pointer-events: all; /* Permite clics */
-            transform-style: preserve-3d;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: riseBubbles 4s infinite linear;
         }
-        
-        /* El personaje jugable (niña con canasta - image_5.png) */
-        #player-basket {
-            width: 100%;
-            height: 100%;
-            background-image: url('image_5.png'); /* Tu imagen 5 */
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: bottom center;
+        .bubbles::before, .bubbles::after {
+            content: '';
             position: absolute;
-            transition: transform 0.1s ease-out; /* Movimiento suave */
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
         }
-        
-        /* El personaje de agradecimiento (niña manos juntas - image_6.png) */
-        #player-thanks {
-            width: 100%;
-            height: 100%;
-            background-image: url('image_6.png'); /* Tu imagen 6 */
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: bottom center;
-            position: absolute;
-            transform: translateZ(-1px) rotateY(180deg); /* Escondido detrás */
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s ease-out, transform 1s ease-out;
-        }
+        .bubbles::before { left: -20px; width: 6px; height: 6px; animation: riseBubbles 5s infinite linear; }
+        .bubbles::after { left: 20px; width: 8px; height: 8px; animation: riseBubbles 3s infinite linear; }
 
-        /* --- LO QUE CAE (Deseos de Papel) --- */
-        .wish {
-            width: 30px;
-            height: 30px;
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 5;
-            transition: transform 0.1s linear;
+        @keyframes riseBubbles {
+            0% { bottom: -10px; transform: translateX(0); opacity: 0; }
+            50% { opacity: 0.7; transform: translateX(15px); }
+            100% { bottom: 100%; transform: translateX(-15px); opacity: 0; }
         }
-
-        /* Estrellas y Corazones como formas de CSS y emojis (sutiles) */
-        .wish-star::before { content: '⭐'; font-size: 24px; color: #fff; text-shadow: 0 0 10px rgba(255,255,100,0.8); }
-        .wish-heart::before { content: '💖'; font-size: 24px; color: #fff; text-shadow: 0 0 10px rgba(255,100,100,0.8); }
-
-        /* --- INTERFAZ (UI) Estilo Papelcraft --- */
-        #ui {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            background-color: var(--paper-cream);
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-            font-size: 16px;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            z-index: 100;
-        }
-
-        #score {
-            font-weight: bold;
-            color: var(--paper-blue);
-        }
-
-        /* --- MENSAJE FINAL POP-UP --- */
-        #final-popup {
-            display: none; /* Escondido */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translateZ(100px); /* Muy adelante */
-            background-color: var(--paper-cream);
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            text-align: center;
-            color: #333;
-            font-size: 20px;
-            z-index: 200;
-            border: 5px solid white;
-        }
-
-        /* Estilos específicos para el agradecimiento (image_6.png) */
-        .player-thanks-active #player-basket {
-            opacity: 0;
-            transform: rotateY(180deg);
-        }
-        
-        .player-thanks-active #player-thanks {
-            opacity: 1;
-            transform: translateZ(1px) rotateY(0deg); /* Se revela */
-        }
-
     </style>
 </head>
 <body>
 
-    <div id="game-container">
+    <h1>Acuario Interactivo</h1>
+    
+    <div class="controls">
+        <label for="colorPicker">Cambiar color del agua de los tanques:</label>
+        <input type="color" id="colorPicker" value="#0f4c81">
+    </div>
+
+    <div class="aquarium-container">
         
-        <div id="ui">Deseos Atrapados: <span id="score">0</span> / 10</div>
-        
-        <div class="paper-hill"></div>
-        
-        <div id="player">
-            <div id="player-basket"></div>
-            <div id="player-thanks"></div>
+        <div class="tank" id="tank1">
+            <h3 class="tank-title">Tanque de Medusas</h3>
+            <div class="creature jellyfish-1">🪼</div>
+            <div class="creature jellyfish-2">🪼</div>
+            <div class="bubbles"></div>
         </div>
 
-        <div id="final-popup">
-            <h2>¡Muchas gracias! ✨</h2>
-            <p>Hicimos un gran equipo, logramos atraparlos todos.</p>
+        <div class="tank" id="tank2">
+            <h3 class="tank-title">Zona de Tiburones</h3>
+            <div class="creature shark">🦈</div>
+            <div class="bubbles" style="animation-delay: 1.5s;"></div>
+        </div>
+
+        <div class="tank" id="tank3">
+            <h3 class="tank-title">Arrecife de Tortugas</h3>
+            <div class="creature turtle-1">🐢</div>
+            <div class="bubbles" style="animation-delay: 3s;"></div>
         </div>
 
     </div>
 
     <script>
-        const gameContainer = document.getElementById('game-container');
-        const player = document.getElementById('player');
-        const scoreElement = document.getElementById('score');
-        const finalPopup = document.getElementById('final-popup');
-        // const plingSound = document.getElementById('pling'); // Descomenta si usas audio
+        // Seleccionamos el input de color y todos los tanques
+        const colorPicker = document.getElementById('colorPicker');
+        const tanks = document.querySelectorAll('.tank');
 
-        let score = 0;
-        const targetScore = 10;
-        let gameActive = true;
-
-        // --- MOVIMIENTO DEL PERSONAJE CON EL RATÓN (3D) ---
-        gameContainer.addEventListener('mousemove', (e) => {
-            if (!gameActive) return;
-
-            // Calcula la posición relativa del ratón
-            let x = e.clientX;
+        // Escuchamos el evento cuando el usuario cambia el color
+        colorPicker.addEventListener('input', (event) => {
+            const newColor = event.target.value;
             
-            // Limita el movimiento dentro de la pantalla
-            const playerWidth = player.offsetWidth;
-            const containerWidth = window.innerWidth;
-            if (x < playerWidth / 2) x = playerWidth / 2;
-            if (x > containerWidth - playerWidth / 2) x = containerWidth - playerWidth / 2;
-            
-            player.style.left = x + 'px';
+            // Recorremos cada tanque para aplicarle el nuevo fondo
+            tanks.forEach(tank => {
+                tank.style.backgroundColor = newColor;
+            });
         });
-
-        // Soporte para móviles (touch)
-        gameContainer.addEventListener('touchmove', (e) => {
-            if (!gameActive) return;
-            let x = e.touches[0].clientX;
-            const playerWidth = player.offsetWidth;
-            const containerWidth = window.innerWidth;
-            if (x < playerWidth / 2) x = playerWidth / 2;
-            if (x > containerWidth - playerWidth / 2) x = containerWidth - playerWidth / 2;
-            player.style.left = x + 'px';
-        });
-
-
-        // --- CREACIÓN Y CAÍDA DE DESEOS (Papelcraft) ---
-        function createWish() {
-            if (!gameActive) return;
-
-            const wish = document.createElement('div');
-            wish.classList.add('wish');
-            
-            // Alterna entre estrella y corazón
-            if (Math.random() > 0.5) {
-                wish.classList.add('wish-star');
-            } else {
-                wish.classList.add('wish-heart');
-            }
-            
-            // Posición inicial aleatoria arriba (atrás en Z)
-            wish.style.left = Math.random() * (window.innerWidth - 30) + 'px';
-            wish.style.top = '-30px';
-            wish.style.transform = `translateZ(-10px)`; // Un poco atrás de la colina
-            
-            gameContainer.appendChild(wish);
-            
-            // Velocidad de caída aleatoria (más lento para mayor 'WOW' factor)
-            let speed = Math.random() * 2 + 1.5; // Entre 1.5 y 3.5px por frame
-            
-            function fall() {
-                if (!gameActive) {
-                    wish.remove();
-                    return;
-                }
-
-                let top = parseFloat(wish.style.top);
-                top += speed;
-                wish.style.top = top + 'px';
-                
-                // --- DETECCIÓN DE COLISIÓN (Atrapar el deseo) ---
-                const playerRect = player.getBoundingClientRect();
-                const wishRect = wish.getBoundingClientRect();
-                
-                // Un poco de margen para que se sienta bien atrapado en la canasta
-                if (
-                    wishRect.bottom > playerRect.top + 10 &&
-                    wishRect.top < playerRect.bottom - 10 &&
-                    wishRect.right > playerRect.left + 10 &&
-                    wishRect.left < playerRect.right - 10
-                ) {
-                    // ¡Atrapado!
-                    score++;
-                    scoreElement.innerText = score;
-                    wish.remove();
-                    
-                    // Sonido opcional
-                    // plingSound.currentTime = 0; plingSound.play();
-                    
-                    // Comprueba si ganó
-                    if (score >= targetScore) {
-                        endGame();
-                    }
-                    return; // Detiene la caída
-           move();
-                } else {
-                    requestAnimationFrame(fall); // Sigue cayendo
-                }
-            }
-            requestAnimationFrame(fall);
-        }
-
-        // Crea un deseo cada cierto tiempo
-        let wishInterval = setInterval(createWish, 900); // Uno cada 0.9s
-
-
-        // --- FINAL DEL JUEGO: REVELACIÓN Y GRACIAS ---
-        function endGame() {
-            gameActive = false;
-            clearInterval(wishInterval);
-            
-            // Muestra el mensaje final
-            finalPopup.style.display = 'block';
-            
-            // ¡La Magia! Activa el personaje de agradecimiento (image_6.png)
-            player.classList.add('player-thanks-active');
-            
-            // Opcional: Centrar el personaje para el final
-            player.style.left = '50%';
-        }
-
     </script>
-
 </body>
 </html>
