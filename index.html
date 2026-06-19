@@ -3,308 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acuario Virtual Pro</title>
+    <title>Acuario Atlantis - Tanques Virtuales</title>
     <style>
         :root {
-            --bg-main: #0a0b10;
-            --tank1-color: #0d324d;
-            --tank2-color: #0f172a;
-            --tank3-color: #112233;
+            /* Colores de Marca y Fondo Global */
+            --bg-global: #051025;
+            --tank1-base: #0a4d8c;
+            --tank2-base: #101030;
+            --tank3-base: #1a2a4a;
+            
+            /* Colores de UI */
+            --accent-blue: #2a88f5;
+            --accent-green: #3adb8c;
+            --text-main: #f0f5f9;
+            --text-subtle: #8da1b9;
         }
 
         body {
             margin: 0;
-            padding: 40px 20px;
-            background-color: var(--bg-main);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            color: #f8fafc;
+            padding: 0;
+            background-color: var(--bg-global);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 5px;
-            background: linear-gradient(to right, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1, h2, h3 {
+            margin: 0;
+            font-weight: 700;
         }
 
-        p.subtitle {
-            color: #64748b;
-            margin-bottom: 40px;
-            font-size: 1rem;
+        p {
+            margin: 0;
+            color: var(--text-subtle);
         }
 
-        /* Panel de Control Estilo Glassmorphism */
-        .dashboard {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(12px);
+        /* --- Panel de Control Estilo 'Glassmorphism' --- */
+        .controls-panel {
+            background: rgba(16, 26, 50, 0.6);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 20px;
             border-radius: 16px;
+            padding: 15px 30px;
             display: flex;
-            gap: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            gap: 20px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: 20px;
         }
 
-        .control-group {
+        .control-item {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .control-group label {
-            font-size: 0.8rem;
-            color: #94a3b8;
+        .control-item label {
+            font-size: 0.85rem;
+            color: var(--text-subtle);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        .control-group input[type="color"] {
+        .control-item input[type="color"] {
             -webkit-appearance: none;
             border: none;
-            width: 50px;
+            width: 35px;
             height: 35px;
-            border-radius: 8px;
+            border-radius: 50%;
             cursor: pointer;
             background: none;
         }
 
-        .control-group input[type="color"]::-webkit-color-swatch {
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
+        .control-item input[type="color"]::-webkit-color-swatch {
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%;
         }
 
-        /* Contenedor del Acuario */
-        .aquarium-grid {
+        /* --- Estructura Principal del Acuario --- */
+        .aquarium-main {
+            width: 100%;
+            max-width: 1100px;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            color: var(--text-main);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 10px auto 0;
+        }
+
+        /* Contenedor de los Tanques */
+        .tank-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
-            width: 100%;
-            max-width: 1100px;
         }
 
-        /* El Tanque de Cristal */
+        /* --- El Tanque de Cristal con Efectos --- */
         .tank {
-            height: 480px;
+            height: 450px;
             border-radius: 24px;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: background 1s ease; /* Transición suave de color */
         }
 
-        /* Capa 1: Gradiente de profundidad */
-        #tank1 { background: radial-gradient(circle at 50% 30%, var(--tank1-color) 0%, #030712 100%); }
-        #tank2 { background: radial-gradient(circle at 50% 30%, var(--tank2-color) 0%, #020617 100%); }
-        #tank3 { background: radial-gradient(circle at 50% 30%, var(--tank3-color) 0%, #020617 100%); }
+        /* Capa 1: Degradado Profundo */
+        #tank1 { background: radial-gradient(circle at 50% 30%, var(--tank1-base) 0%, rgba(5, 10, 30, 0.9) 100%); }
+        #tank2 { background: radial-gradient(circle at 50% 30%, var(--tank2-base) 0%, rgba(5, 10, 30, 0.9) 100%); }
+        #tank3 { background: radial-gradient(circle at 50% 30%, var(--tank3-base) 0%, rgba(5, 10, 30, 0.9) 100%); }
 
-        /* Capa 2: Efecto de Luz Marina (Cáusticas) */
-        .water-shine {
+        /* Capa 2: Efecto de Agua (Cáusticas) - Textura Realista */
+        .water-effect {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(ellipse at 50% -20%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%);
-            animation: waterGlow 4s ease-in-out infinite alternate;
+            animation: waterGlitter 5s ease-in-out infinite alternate;
             pointer-events: none;
         }
 
-        @keyframes waterGlow {
-            0% { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.1) translateX(5px); }
+        @keyframes waterGlitter {
+            0% { opacity: 0.7; transform: scale(1) translateX(0px); }
+            100% { opacity: 1; transform: scale(1.08) translateX(10px); }
         }
 
-        .tank-header {
+        .tank-title {
             position: absolute;
             top: 20px; left: 20px;
-            margin: 0;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 0.5px;
+            font-size: 1rem;
+            color: var(--text-main);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 8px;
             z-index: 10;
         }
 
-        /* --- Criaturas SVG con Brillo Neon --- */
+        /* --- Criaturas SVG Detalladas y Animadas --- */
         .creature {
             position: absolute;
             pointer-events: none;
-            filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
         }
 
-        /* Medusa (Efecto bioluminiscente) */
+        /* Medusa (Brillo Bioluminiscente) */
         .jellyfish {
-            width: 70px;
-            fill: #67e8f9;
-            filter: drop-shadow(0 0 15px #06b6d4);
+            width: 80px;
+            fill: #70f1f1;
+            filter: drop-shadow(0 0 15px #2a88f5);
         }
-        .jelly-1 { top: 40%; left: 25%; animation: jellySwim 7s ease-in-out infinite; }
-        .jelly-2 { top: 20%; right: 25%; animation: jellySwim 9s ease-in-out infinite -3s; transform: scale(0.8); }
+        .jelly-1 { top: 35%; left: 25%; animation: jellyfishPulse 6s ease-in-out infinite; }
+        .jelly-2 { top: 20%; right: 25%; animation: jellyfishPulse 8s ease-in-out infinite -3s; transform: scale(0.8); }
 
-        @keyframes jellySwim {
-            0% { transform: translateY(30px) scaleY(1) scaleX(1); opacity: 0.7; }
-            40% { transform: translateY(-40px) scaleY(1.1) scaleX(0.9); opacity: 1; }
-            70% { transform: translateY(-20px) scaleY(0.95) scaleX(1.05); }
-            100% { transform: translateY(30px) scaleY(1) scaleX(1); opacity: 0.7; }
+        @keyframes jellyfishPulse {
+            0% { transform: translateY(20px) scaleY(1) scaleX(1); opacity: 0.8; }
+            40% { transform: translateY(-30px) scaleY(1.1) scaleX(0.9); opacity: 1; }
+            70% { transform: translateY(-10px) scaleY(0.95) scaleX(1.05); }
+            100% { transform: translateY(20px) scaleY(1) scaleX(1); opacity: 0.8; }
         }
 
-        /* Tiburón (Silueta fluida) */
+        /* Tiburón (Silueta Fluida y Profunda) */
         .shark {
-            width: 140px;
-            fill: #94a3b8;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+            width: 150px;
+            fill: rgba(200, 215, 230, 0.7);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
             top: 45%;
-            animation: sharkCruise 12s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+            animation: sharkCruise 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
         @keyframes sharkCruise {
-            0% { left: -150px; transform: scaleX(1) rotate(5deg); }
+            0% { left: -160px; transform: scaleX(1) rotate(5deg); }
             48% { transform: scaleX(1) rotate(-5deg); }
             50% { left: 110%; transform: scaleX(-1) rotate(-5deg); }
             98% { transform: scaleX(-1) rotate(5deg); }
-            100% { left: -150px; transform: scaleX(1) rotate(5deg); }
+            100% { left: -160px; transform: scaleX(1) rotate(5deg); }
         }
 
-        /* Tortuga (Paseo elegante) */
+        /* Tortuga (Elegante y Lenta) */
         .turtle {
-            width: 90px;
-            fill: #34d399;
-            filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.4));
-            animation: turtleGlide 16s linear infinite;
+            width: 100px;
+            fill: var(--accent-green);
+            filter: drop-shadow(0 0 12px rgba(58, 219, 140, 0.4));
+            animation: turtleGlide 18s linear infinite;
         }
 
         @keyframes turtleGlide {
-            0% { right: -100px; bottom: 15%; transform: scaleX(1) rotate(15deg); }
-            50% { right: 110%; bottom: 55%; transform: scaleX(1) rotate(-10deg); }
+            0% { right: -120px; bottom: 15%; transform: scaleX(1) rotate(15deg); }
+            50% { right: 110%; bottom: 60%; transform: scaleX(1) rotate(-10deg); }
             51% { transform: scaleX(-1) rotate(-10deg); }
-            100% { right: -100px; bottom: 15%; transform: scaleX(-1) rotate(15deg); }
+            100% { right: -120px; bottom: 15%; transform: scaleX(-1) rotate(15deg); }
         }
 
-        /* Sistema de Partículas / Burbujas Cinematic */
-        .bubble-stream {
+        /* Partículas de Agua / Burbujas Cinematic */
+        .bubble {
             position: absolute;
-            bottom: -20px;
-            width: 2px;
-            height: 2px;
             background: white;
             border-radius: 50%;
             opacity: 0;
-            animation: floatBubble 5s linear infinite;
+            animation: bubbleFloat 6s linear infinite;
         }
 
-        @keyframes floatBubble {
+        @keyframes bubbleFloat {
             0% { bottom: -10px; transform: translateX(0); opacity: 0; }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.4; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
             100% { bottom: 100%; transform: translateX(30px); opacity: 0; scale: 4; }
         }
+
     </style>
 </head>
 <body>
 
-    <h1>Acuario Oceanográfico</h1>
-    <p class="subtitle">Laboratorio virtual de ecosistemas marinos</p>
-    
-    <!-- Centro de Control de Iluminación -->
-    <div class="dashboard">
-        <div class="control-group">
-            <label for="c1">Tanque 1</label>
-            <input type="color" id="c1" value="#0d324d">
+    <div class="controls-panel">
+        <div class="control-item">
+            <label for="c1">T1 (Medusas)</label>
+            <input type="color" id="c1" value="#0a4d8c">
         </div>
-        <div class="control-group">
-            <label for="c2">Tanque 2</label>
-            <input type="color" id="c2" value="#0f172a">
+        <div class="control-item">
+            <label for="c2">T2 (Tiburón)</label>
+            <input type="color" id="c2" value="#101030">
         </div>
-        <div class="control-group">
-            <label for="c3">Tanque 3</label>
-            <input type="color" id="c3" value="#112233">
+        <div class="control-item">
+            <label for="c3">T3 (Tortuga)</label>
+            <input type="color" id="c3" value="#1a2a4a">
         </div>
     </div>
 
-    <!-- Escenarios -->
-    <div class="aquarium-grid">
+    <div class="aquarium-main">
+        <div class="section-header">
+            <h2>Nuestros Ecosistemas Virtuales</h2>
+            <p>Explora la diversidad de los océanos. Puedes personalizar la iluminación de cada tanque.</p>
+        </div>
         
-        <!-- TANQUE 1: MEDUSAS -->
-        <div class="tank" id="tank1">
-            <div class="water-shine"></div>
-            <h3 class="tank-header">Ecosistema Abisal</h3>
+        <div class="tank-grid">
             
-            <!-- SVG de Medusa 1 -->
-            <svg class="creature jellyfish jelly-1" viewBox="0 0 100 100">
-                <path d="M20,40 Q20,10 50,10 Q80,10 80,40 Q80,50 50,45 Q20,50 20,40 Z"/>
-                <path d="M30,45 Q25,70 32,95 M40,46 Q43,65 38,90 M50,46 Q55,75 52,95 M60,46 Q58,70 65,92 M70,45 Q75,65 68,95" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </svg>
+            <div class="tank" id="tank1">
+                <div class="water-effect"></div>
+                <h3 class="tank-title">Zona Abisal</h3>
+                
+                <svg class="creature jellyfish jelly-1" viewBox="0 0 100 100">
+                    <path d="M20,40 Q20,10 50,10 Q80,10 80,40 Q80,50 50,45 Q20,50 20,40 Z"/>
+                    <path d="M30,45 Q25,70 32,95 M40,46 Q43,65 38,90 M50,46 Q55,75 52,95 M60,46 Q58,70 65,92 M70,45 Q75,65 68,95" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                </svg>
 
-            <!-- SVG de Medusa 2 -->
-            <svg class="creature jellyfish jelly-2" viewBox="0 0 100 100">
-                <path d="M20,40 Q20,10 50,10 Q80,10 80,40 Q80,50 50,45 Q20,50 20,40 Z"/>
-                <path d="M30,45 Q35,65 28,90 M42,46 Q38,70 45,95 M52,46 Q48,65 54,90 M65,45 Q70,75 62,95" stroke="currentColor" stroke-width="2" fill="none"/>
-            </svg>
+                <svg class="creature jellyfish jelly-2" viewBox="0 0 100 100">
+                    <path d="M20,40 Q20,10 50,10 Q80,10 80,40 Q80,50 50,45 Q20,50 20,40 Z"/>
+                    <path d="M30,45 Q35,65 28,90 M42,46 Q38,70 45,95 M52,46 Q48,65 54,90 M65,45 Q70,75 62,95" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
 
-            <!-- Burbujas con desfases de tiempo -->
-            <div class="bubble-stream" style="left: 30%; animation-delay: 0s; animation-duration: 6s;"></div>
-            <div class="bubble-stream" style="left: 35%; animation-delay: 2s; animation-duration: 5s;"></div>
-        </div>
+                <div class="bubble" style="left: 30%; width: 3px; height: 3px; animation-delay: 0s; animation-duration: 6s;"></div>
+                <div class="bubble" style="left: 35%; width: 2px; height: 2px; animation-delay: 2s; animation-duration: 5s;"></div>
+                <div class="bubble" style="left: 28%; width: 4px; height: 4px; animation-delay: 4s; animation-duration: 7s;"></div>
+            </div>
 
-        <!-- TANQUE 2: TIBURÓN -->
-        <div class="tank" id="tank2">
-            <div class="water-shine"></div>
-            <h3 class="tank-header">Fosa de Depredadores</h3>
-            
-            <!-- SVG de Tiburón Estilizado -->
-            <svg class="creature shark" viewBox="0 0 120 60">
-                <path d="M10,30 Q30,15 70,15 Q100,20 115,30 Q100,40 70,45 Q30,45 10,30 Z M70,15 Q75,0 85,5 Q80,15 70,15 Z M95,24 L110,12 L105,30 L112,45 L98,34 Z M40,40 L35,52 L48,42 Z"/>
-            </svg>
+            <div class="tank" id="tank2">
+                <div class="water-effect"></div>
+                <h3 class="tank-title">Fosa de Depredadores</h3>
+                
+                <svg class="creature shark" viewBox="0 0 120 60">
+                    <path d="M10,30 Q30,15 70,15 Q100,20 115,30 Q100,40 70,45 Q30,45 10,30 Z M70,15 Q75,0 85,5 Q80,15 70,15 Z M95,24 L110,12 L105,30 L112,45 L98,34 Z M40,40 L35,52 L48,42 Z"/>
+                </svg>
 
-            <div class="bubble-stream" style="left: 70%; animation-delay: 1s; animation-duration: 7s;"></div>
-            <div class="bubble-stream" style="left: 73%; animation-delay: 4s; animation-duration: 4s;"></div>
-        </div>
+                <div class="bubble" style="left: 70%; width: 3px; height: 3px; animation-delay: 1s; animation-duration: 7s;"></div>
+                <div class="bubble" style="left: 73%; width: 4px; height: 4px; animation-delay: 4s; animation-duration: 4s;"></div>
+            </div>
 
-        <!-- TANQUE 3: TORTUGA -->
-        <div class="tank" id="tank3">
-            <div class="water-shine"></div>
-            <h3 class="tank-header">Arrecife Protegido</h3>
-            
-            <!-- SVG de Tortuga Marina -->
-            <svg class="creature turtle" viewBox="0 0 100 100">
-                <!-- Cuerpo -->
-                <ellipse cx="50" cy="50" rx="22" ry="28" />
-                <!-- Aletas delanteras -->
-                <path d="M30,35 Q5,25 12,12 Q32,22 34,32 Z" />
-                <path d="M70,35 Q95,25 88,12 Q68,22 66,32 Z" />
-                <!-- Aletas traseras -->
-                <path d="M32,70 Q18,85 25,90 Q35,80 36,74 Z" />
-                <path d="M68,70 Q82,85 75,90 Q65,80 64,74 Z" />
-                <!-- Cabeza -->
-                <ellipse cx="50" cy="16" rx="7" ry="9" />
-            </svg>
+            <div class="tank" id="tank3">
+                <div class="water-effect"></div>
+                <h3 class="tank-title">Arrecife de Coral</h3>
+                
+                <svg class="creature turtle" viewBox="0 0 100 100">
+                    <ellipse cx="50" cy="50" rx="22" ry="28" />
+                    <path d="M30,35 Q5,25 12,12 Q32,22 34,32 Z" />
+                    <path d="M70,35 Q95,25 88,12 Q68,22 66,32 Z" />
+                    <path d="M32,70 Q18,85 25,90 Q35,80 36,74 Z" />
+                    <path d="M68,70 Q82,85 75,90 Q65,80 64,74 Z" />
+                    <ellipse cx="50" cy="16" rx="7" ry="9" />
+                </svg>
 
-            <div class="bubble-stream" style="left: 50%; animation-delay: 0.5s; animation-duration: 8s;"></div>
+                <div class="bubble" style="left: 50%; width: 4px; height: 4px; animation-delay: 0.5s; animation-duration: 8s;"></div>
+            </div>
+
         </div>
 
     </div>
 
     <script>
-        // Mapeo dinámico de inputs a sus respectivos tanques y variables CSS
-        const setupTankControl = (inputId, tankId, cssVariable) => {
+        // Función para asignar el control de color a un tanque y su variable CSS
+        const initTankControl = (inputId, cssVariableName) => {
             document.getElementById(inputId).addEventListener('input', (e) => {
-                const color = e.target.value;
-                // Modificamos la variable CSS para que el cambio de gradiente sea fluido
-                document.documentElement.style.setProperty(cssVariable, color);
+                const newColor = e.target.value;
+                // Modificamos la variable CSS para un cambio suave y consistente
+                document.documentElement.style.setProperty(cssVariableName, newColor);
             });
         };
 
-        setupTankControl('c1', 'tank1', '--tank1-color');
-        setupTapeControl = setupTankControl('c2', 'tank2', '--tank2-color');
-        setupTankControl('c3', 'tank3', '--tank3-color');
+        // Inicializamos los controles individuales para cada tanque
+        initTankControl('c1', '--tank1-base');
+        initTankControl('c2', '--tank2-base');
+        initTankControl('c3', '--tank3-base');
     </script>
 </body>
 </html>
